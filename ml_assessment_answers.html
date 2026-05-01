@@ -1,0 +1,793 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ML Assessment – Answer Key</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', Arial, sans-serif; background: #f5f5f5; color: #222; font-size: 14px; }
+
+  .shell { display: flex; min-height: 100vh; }
+
+  .sidebar { width: 210px; background: #fff; border-right: 1px solid #ddd; padding: 16px; flex-shrink: 0; position: sticky; top: 0; height: 100vh; overflow-y: auto; }
+  .logo { font-size: 16px; font-weight: 800; color: #1a56db; margin-bottom: 6px; letter-spacing: -0.5px; }
+  .sidebar-sub { font-size: 11px; color: #888; margin-bottom: 14px; }
+  .sidebar h3 { font-size: 11px; color: #555; margin-bottom: 8px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.4px; }
+  .nav-list { list-style: none; }
+  .nav-list li { margin-bottom: 4px; }
+  .nav-list a { display: block; padding: 6px 10px; border-radius: 5px; font-size: 12px; color: #444; text-decoration: none; cursor: pointer; line-height: 1.4; }
+  .nav-list a:hover { background: #e8f0fe; color: #1a56db; }
+  .nav-list a.active { background: #1a56db; color: #fff; }
+
+  .main { flex: 1; padding: 28px 32px; max-width: 900px; }
+
+  .q-block { margin-bottom: 40px; }
+  .q-label { font-size: 11px; color: #999; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
+  .q-title { font-size: 19px; font-weight: 700; color: #111; margin-bottom: 14px; line-height: 1.3; }
+
+  .task-answer { margin-bottom: 20px; }
+  .task-heading { font-size: 14px; font-weight: 700; color: #1a56db; margin-bottom: 8px; padding: 6px 10px; background: #eef3ff; border-left: 3px solid #1a56db; border-radius: 0 5px 5px 0; }
+
+  pre {
+    background: #1e1e2e;
+    color: #cdd6f4;
+    font-family: 'Courier New', Consolas, monospace;
+    font-size: 12px;
+    line-height: 1.65;
+    padding: 16px;
+    border-radius: 7px;
+    overflow-x: auto;
+    white-space: pre;
+    margin-bottom: 4px;
+  }
+
+  .copy-btn {
+    display: inline-block;
+    margin-bottom: 14px;
+    padding: 4px 12px;
+    font-size: 11px;
+    background: #fff;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    cursor: pointer;
+    color: #555;
+  }
+  .copy-btn:hover { background: #f0f0f0; }
+  .copy-btn.copied { color: #1a9e5c; border-color: #1a9e5c; }
+
+  .divider { border: none; border-top: 1px solid #e0e0e0; margin: 36px 0; }
+
+  .score-bar { display: flex; align-items: center; gap: 8px; background: #fafafa; border: 1px solid #ddd; border-radius: 4px; padding: 8px 12px; margin-top: 12px; margin-bottom: 4px; }
+  .score-icon { width: 16px; height: 16px; background: #1a56db; border-radius: 3px; flex-shrink: 0; }
+  .score-text { font-size: 13px; font-weight: 600; color: #333; }
+
+  .kw { color: #cba6f7; }
+  .fn { color: #89b4fa; }
+  .st { color: #a6e3a1; }
+  .cm { color: #6c7086; font-style: italic; }
+  .nm { color: #fab387; }
+  .op { color: #89dceb; }
+</style>
+</head>
+<body>
+<div class="shell">
+  <div class="sidebar">
+    <div class="logo">masai.</div>
+    <div class="sidebar-sub">Module 1 – Answer Key</div>
+    <h3>Questions</h3>
+    <ul class="nav-list" id="navList">
+      <li><a onclick="scrollTo('q1')" id="nav-q1" class="active">Q1 – Multi-class Classification</a></li>
+      <li><a onclick="scrollTo('q2')" id="nav-q2">Q2 – K-Means Clustering</a></li>
+      <li><a onclick="scrollTo('q3')" id="nav-q3">Q3 – Time-Series Forecasting</a></li>
+      <li><a onclick="scrollTo('q4')" id="nav-q4">Q4 – Regularised Regression</a></li>
+      <li><a onclick="scrollTo('q5')" id="nav-q5">Q5 – NLP Sentiment Analysis</a></li>
+    </ul>
+  </div>
+
+  <div class="main" id="mainScroll">
+
+    <!-- ── Q1 ── -->
+    <div class="q-block" id="q1">
+      <div class="q-label">Question 1</div>
+      <div class="q-title">Multi-Class Classification on Student Performance Dataset</div>
+
+      <div class="task-answer">
+        <div class="task-heading">(a) Load and Inspect the Data</div>
+        <pre id="code-q1a"><span class="kw">import</span> pandas <span class="kw">as</span> pd
+<span class="kw">import</span> io
+
+csv_data = <span class="st">"""study_hours,attendance_pct,assignments_done,prev_score,parental_edu,internet_access,grade
+2.5,72,8,55,High School,Yes,C
+5.0,91,15,78,Graduate,Yes,A
+1.0,50,4,38,Primary,No,F
+3.5,80,12,65,College,Yes,B
+6.0,95,18,88,Graduate,Yes,A
+1.5,58,6,44,Primary,No,F
+4.0,85,14,71,College,Yes,B
+2.0,65,9,52,High School,Yes,C
+5.5,93,17,85,Graduate,Yes,A
+1.2,55,5,40,Primary,No,F
+3.0,76,11,62,College,Yes,B
+4.5,88,16,80,Graduate,Yes,A
+2.8,70,10,57,High School,Yes,C
+1.8,60,7,46,High School,No,F
+5.2,92,16,83,Graduate,Yes,A
+3.2,79,12,64,College,Yes,B
+0.8,48,3,35,Primary,No,F
+4.2,86,15,74,College,Yes,B
+2.3,68,8,53,High School,Yes,C
+5.8,94,18,87,Graduate,Yes,A"""</span>
+
+df = pd.<span class="fn">read_csv</span>(io.<span class="fn">StringIO</span>(csv_data))
+
+<span class="fn">print</span>(<span class="st">"Shape:"</span>, df.shape)
+<span class="fn">print</span>(<span class="st">"\nData Types:\n"</span>, df.dtypes)
+<span class="fn">print</span>(<span class="st">"\nFirst 5 Rows:\n"</span>, df.<span class="fn">head</span>())</pre>
+        <button class="copy-btn" onclick="copyCode('code-q1a', this)">Copy</button>
+      </div>
+
+      <div class="task-answer">
+        <div class="task-heading">(b) Define Features and Target</div>
+        <pre id="code-q1b">X = df.<span class="fn">drop</span>(columns=[<span class="st">'grade'</span>])
+y = df[<span class="st">'grade'</span>]
+
+<span class="fn">print</span>(<span class="st">"Features shape:"</span>, X.shape)
+<span class="fn">print</span>(<span class="st">"Target distribution:\n"</span>, y.<span class="fn">value_counts</span>())</pre>
+        <button class="copy-btn" onclick="copyCode('code-q1b', this)">Copy</button>
+      </div>
+
+      <div class="task-answer">
+        <div class="task-heading">(c) Data Preprocessing</div>
+        <pre id="code-q1c"><span class="kw">from</span> sklearn.pipeline <span class="kw">import</span> Pipeline
+<span class="kw">from</span> sklearn.compose <span class="kw">import</span> ColumnTransformer
+<span class="kw">from</span> sklearn.preprocessing <span class="kw">import</span> StandardScaler, OneHotEncoder
+
+numerical_cols = [<span class="st">'study_hours'</span>, <span class="st">'attendance_pct'</span>, <span class="st">'assignments_done'</span>, <span class="st">'prev_score'</span>]
+categorical_cols = [<span class="st">'parental_edu'</span>, <span class="st">'internet_access'</span>]
+
+numerical_pipeline = Pipeline(steps=[
+    (<span class="st">'scaler'</span>, <span class="fn">StandardScaler</span>())
+])
+
+categorical_pipeline = Pipeline(steps=[
+    (<span class="st">'encoder'</span>, <span class="fn">OneHotEncoder</span>(handle_unknown=<span class="st">'ignore'</span>))
+])
+
+preprocessor = <span class="fn">ColumnTransformer</span>(transformers=[
+    (<span class="st">'num'</span>, numerical_pipeline, numerical_cols),
+    (<span class="st">'cat'</span>, categorical_pipeline, categorical_cols)
+])
+
+<span class="fn">print</span>(<span class="st">"Preprocessor created successfully."</span>)</pre>
+        <button class="copy-btn" onclick="copyCode('code-q1c', this)">Copy</button>
+      </div>
+
+      <div class="task-answer">
+        <div class="task-heading">(d) Train-Test Split</div>
+        <pre id="code-q1d"><span class="kw">from</span> sklearn.model_selection <span class="kw">import</span> train_test_split
+
+X_train, X_test, y_train, y_test = <span class="fn">train_test_split</span>(
+    X, y, test_size=<span class="nm">0.2</span>, random_state=<span class="nm">42</span>, stratify=y
+)
+
+<span class="fn">print</span>(<span class="st">f"Training samples: {<span class="fn">len</span>(X_train)}, Test samples: {<span class="fn">len</span>(X_test)}"</span>)</pre>
+        <button class="copy-btn" onclick="copyCode('code-q1d', this)">Copy</button>
+      </div>
+
+      <div class="task-answer">
+        <div class="task-heading">(e) Model Training</div>
+        <pre id="code-q1e"><span class="kw">from</span> sklearn.ensemble <span class="kw">import</span> RandomForestClassifier
+
+model_pipeline = <span class="fn">Pipeline</span>(steps=[
+    (<span class="st">'preprocessor'</span>, preprocessor),
+    (<span class="st">'classifier'</span>, <span class="fn">RandomForestClassifier</span>(n_estimators=<span class="nm">100</span>, random_state=<span class="nm">42</span>))
+])
+
+model_pipeline.<span class="fn">fit</span>(X_train, y_train)
+<span class="fn">print</span>(<span class="st">"Model trained successfully."</span>)</pre>
+        <button class="copy-btn" onclick="copyCode('code-q1e', this)">Copy</button>
+      </div>
+
+      <div class="task-answer">
+        <div class="task-heading">(f) Evaluation</div>
+        <pre id="code-q1f"><span class="kw">from</span> sklearn.metrics <span class="kw">import</span> classification_report, confusion_matrix, accuracy_score
+
+y_pred = model_pipeline.<span class="fn">predict</span>(X_test)
+
+<span class="fn">print</span>(<span class="st">"Accuracy:"</span>, <span class="fn">round</span>(<span class="fn">accuracy_score</span>(y_test, y_pred), <span class="nm">4</span>))
+<span class="fn">print</span>(<span class="st">"\nClassification Report:\n"</span>, <span class="fn">classification_report</span>(y_test, y_pred))
+<span class="fn">print</span>(<span class="st">"Confusion Matrix:\n"</span>, <span class="fn">confusion_matrix</span>(y_test, y_pred))</pre>
+        <button class="copy-btn" onclick="copyCode('code-q1f', this)">Copy</button>
+      </div>
+      <div class="score-bar"><div class="score-icon"></div><span class="score-text">Total Marks: 15</span></div>
+    </div>
+
+    <hr class="divider">
+
+    <!-- ── Q2 ── -->
+    <div class="q-block" id="q2">
+      <div class="q-label">Question 2</div>
+      <div class="q-title">Customer Segmentation using K-Means Clustering</div>
+
+      <div class="task-answer">
+        <div class="task-heading">(a) Load and Inspect the Data</div>
+        <pre id="code-q2a"><span class="kw">import</span> pandas <span class="kw">as</span> pd
+<span class="kw">import</span> io
+
+csv_data = <span class="st">"""customer_id,age,annual_income,spending_score,purchase_frequency,avg_order_value,returns_count
+C001,25,32000,72,18,1200,1
+C002,47,85000,28,6,4500,0
+C003,31,54000,61,14,2200,2
+C004,52,120000,15,3,8000,0
+C005,28,41000,78,22,950,3
+C006,36,67000,45,10,3100,1
+C007,22,28000,88,25,750,4
+C008,44,92000,32,7,5200,0
+C009,33,59000,55,12,2600,1
+C010,58,140000,11,2,9500,0
+C011,26,38000,81,21,880,3
+C012,41,78000,38,9,4100,0
+C013,29,46000,70,17,1050,2
+C014,50,108000,20,4,6800,0
+C015,35,63000,50,11,2900,1
+C016,24,30000,85,23,810,3
+C017,48,96000,25,5,5700,0
+C018,32,52000,63,15,2100,2
+C019,27,39000,76,20,920,3
+C020,55,125000,13,3,8700,0"""</span>
+
+df = pd.<span class="fn">read_csv</span>(io.<span class="fn">StringIO</span>(csv_data))
+df = df.<span class="fn">drop</span>(columns=[<span class="st">'customer_id'</span>])   <span class="cm"># drop ID before modelling</span>
+
+<span class="fn">print</span>(<span class="st">"Shape:"</span>, df.shape)
+<span class="fn">print</span>(<span class="st">"\nData Types:\n"</span>, df.dtypes)
+<span class="fn">print</span>(<span class="st">"\nDescriptive Statistics:\n"</span>, df.<span class="fn">describe</span>().<span class="fn">round</span>(<span class="nm">2</span>))</pre>
+        <button class="copy-btn" onclick="copyCode('code-q2a', this)">Copy</button>
+      </div>
+
+      <div class="task-answer">
+        <div class="task-heading">(b) Feature Scaling</div>
+        <pre id="code-q2b"><span class="kw">from</span> sklearn.preprocessing <span class="kw">import</span> StandardScaler
+
+scaler = <span class="fn">StandardScaler</span>()
+X_scaled = scaler.<span class="fn">fit_transform</span>(df)
+
+<span class="cm"># Scaling is essential for K-Means because the algorithm uses Euclidean
+# distance. Without scaling, features with larger numeric ranges (e.g.
+# annual_income in the tens of thousands) dominate the distance
+# calculation and bias cluster assignments.</span>
+
+<span class="fn">print</span>(<span class="st">"Scaling complete. Scaled array shape:"</span>, X_scaled.shape)</pre>
+        <button class="copy-btn" onclick="copyCode('code-q2b', this)">Copy</button>
+      </div>
+
+      <div class="task-answer">
+        <div class="task-heading">(c) Determine Optimal K – Elbow Method</div>
+        <pre id="code-q2c"><span class="kw">import</span> matplotlib.pyplot <span class="kw">as</span> plt
+<span class="kw">from</span> sklearn.cluster <span class="kw">import</span> KMeans
+
+inertia = []
+k_range = <span class="fn">range</span>(<span class="nm">1</span>, <span class="nm">9</span>)
+
+<span class="kw">for</span> k <span class="kw">in</span> k_range:
+    km = <span class="fn">KMeans</span>(n_clusters=k, random_state=<span class="nm">42</span>, n_init=<span class="nm">10</span>)
+    km.<span class="fn">fit</span>(X_scaled)
+    inertia.<span class="fn">append</span>(km.inertia_)
+
+plt.<span class="fn">figure</span>(figsize=(<span class="nm">7</span>, <span class="nm">4</span>))
+plt.<span class="fn">plot</span>(k_range, inertia, marker=<span class="st">'o'</span>, color=<span class="st">'steelblue'</span>)
+plt.<span class="fn">xlabel</span>(<span class="st">'Number of Clusters (k)'</span>)
+plt.<span class="fn">ylabel</span>(<span class="st">'Inertia'</span>)
+plt.<span class="fn">title</span>(<span class="st">'Elbow Method – Optimal k'</span>)
+plt.<span class="fn">xticks</span>(k_range)
+plt.<span class="fn">tight_layout</span>()
+plt.<span class="fn">show</span>()
+
+<span class="fn">print</span>(<span class="st">"Inertia values:"</span>, [<span class="fn">round</span>(v, <span class="nm">2</span>) <span class="kw">for</span> v <span class="kw">in</span> inertia])</pre>
+        <button class="copy-btn" onclick="copyCode('code-q2c', this)">Copy</button>
+      </div>
+
+      <div class="task-answer">
+        <div class="task-heading">(d) Model Training</div>
+        <pre id="code-q2d">optimal_k = <span class="nm">3</span>   <span class="cm"># chosen from the elbow plot</span>
+
+kmeans = <span class="fn">KMeans</span>(n_clusters=optimal_k, random_state=<span class="nm">42</span>, n_init=<span class="nm">10</span>)
+df[<span class="st">'cluster'</span>] = kmeans.<span class="fn">fit_predict</span>(X_scaled)
+
+<span class="fn">print</span>(<span class="st">"Cluster assignments:\n"</span>, df[<span class="st">'cluster'</span>].<span class="fn">value_counts</span>().<span class="fn">sort_index</span>())</pre>
+        <button class="copy-btn" onclick="copyCode('code-q2d', this)">Copy</button>
+      </div>
+
+      <div class="task-answer">
+        <div class="task-heading">(e) Cluster Analysis</div>
+        <pre id="code-q2e"><span class="kw">from</span> sklearn.metrics <span class="kw">import</span> silhouette_score
+
+cluster_means = df.<span class="fn">groupby</span>(<span class="st">'cluster'</span>).<span class="fn">mean</span>().<span class="fn">round</span>(<span class="nm">2</span>)
+<span class="fn">print</span>(<span class="st">"Cluster Mean Feature Values:\n"</span>, cluster_means)
+
+<span class="cm"># Brief interpretation of each cluster</span>
+interpretations = {
+    <span class="nm">0</span>: <span class="st">"High-income, low-spending, infrequent buyers (premium passive)"</span>,
+    <span class="nm">1</span>: <span class="st">"Mid-income, moderate spending, occasional buyers (average segment)"</span>,
+    <span class="nm">2</span>: <span class="st">"Low-income, high spending score, frequent buyers (budget enthusiasts)"</span>
+}
+<span class="fn">print</span>(<span class="st">"\nCluster Interpretations:"</span>)
+<span class="kw">for</span> cluster_id, desc <span class="kw">in</span> interpretations.<span class="fn">items</span>():
+    <span class="fn">print</span>(<span class="st">f"  Cluster {cluster_id}: {desc}"</span>)
+
+sil_score = <span class="fn">silhouette_score</span>(X_scaled, df[<span class="st">'cluster'</span>])
+<span class="fn">print</span>(<span class="st">f"\nSilhouette Score: {<span class="fn">round</span>(sil_score, 4)}"</span>)</pre>
+        <button class="copy-btn" onclick="copyCode('code-q2e', this)">Copy</button>
+      </div>
+
+      <div class="task-answer">
+        <div class="task-heading">(f) PCA Visualisation</div>
+        <pre id="code-q2f"><span class="kw">from</span> sklearn.decomposition <span class="kw">import</span> PCA
+<span class="kw">import</span> matplotlib.pyplot <span class="kw">as</span> plt
+
+pca = <span class="fn">PCA</span>(n_components=<span class="nm">2</span>, random_state=<span class="nm">42</span>)
+X_pca = pca.<span class="fn">fit_transform</span>(X_scaled)
+
+colors = [<span class="st">'#1a56db'</span>, <span class="st">'#e3472e'</span>, <span class="st">'#2ecc71'</span>]
+plt.<span class="fn">figure</span>(figsize=(<span class="nm">7</span>, <span class="nm">5</span>))
+<span class="kw">for</span> i <span class="kw">in</span> <span class="fn">range</span>(optimal_k):
+    mask = df[<span class="st">'cluster'</span>] <span class="op">==</span> i
+    plt.<span class="fn">scatter</span>(X_pca[mask, <span class="nm">0</span>], X_pca[mask, <span class="nm">1</span>],
+                label=<span class="st">f'Cluster {i}'</span>, color=colors[i], s=<span class="nm">80</span>, edgecolors=<span class="st">'k'</span>, linewidths=<span class="nm">0.5</span>)
+
+plt.<span class="fn">xlabel</span>(<span class="st">'PCA Component 1'</span>)
+plt.<span class="fn">ylabel</span>(<span class="st">'PCA Component 2'</span>)
+plt.<span class="fn">title</span>(<span class="st">'Customer Segments – PCA Projection'</span>)
+plt.<span class="fn">legend</span>()
+plt.<span class="fn">tight_layout</span>()
+plt.<span class="fn">show</span>()</pre>
+        <button class="copy-btn" onclick="copyCode('code-q2f', this)">Copy</button>
+      </div>
+      <div class="score-bar"><div class="score-icon"></div><span class="score-text">Total Marks: 15</span></div>
+    </div>
+
+    <hr class="divider">
+
+    <!-- ── Q3 ── -->
+    <div class="q-block" id="q3">
+      <div class="q-label">Question 3</div>
+      <div class="q-title">Time-Series Forecasting on Monthly Sales Data</div>
+
+      <div class="task-answer">
+        <div class="task-heading">(a) Load and Prepare the Data</div>
+        <pre id="code-q3a"><span class="kw">import</span> pandas <span class="kw">as</span> pd
+<span class="kw">import</span> io
+
+csv_data = <span class="st">"""month,units_sold,marketing_spend,avg_price,competitor_price,season,sales_revenue
+2023-01,420,12000,85,90,Winter,35700
+2023-02,390,10500,85,88,Winter,33150
+2023-03,510,14000,83,87,Spring,42330
+2023-04,580,16000,82,86,Spring,47560
+2023-05,640,18000,80,85,Spring,51200
+2023-06,720,21000,78,84,Summer,56160
+2023-07,780,24000,77,83,Summer,60060
+2023-08,750,22500,77,82,Summer,57750
+2023-09,610,17000,80,85,Autumn,48800
+2023-10,530,14500,82,87,Autumn,43460
+2023-11,680,20000,84,89,Autumn,57120
+2023-12,820,28000,88,93,Winter,72160
+2024-01,450,13000,86,91,Winter,38700
+2024-02,410,11000,86,89,Winter,35260
+2024-03,540,15000,84,88,Spring,45360
+2024-04,620,17500,83,87,Spring,51460
+2024-05,690,19500,81,86,Spring,55890
+2024-06,770,23000,79,85,Summer,60830
+2024-07,830,26000,78,84,Summer,64740
+2024-08,800,24000,78,83,Summer,62400"""</span>
+
+df = pd.<span class="fn">read_csv</span>(io.<span class="fn">StringIO</span>(csv_data), parse_dates=[<span class="st">'month'</span>])
+df = df.<span class="fn">sort_values</span>(<span class="st">'month'</span>).<span class="fn">reset_index</span>(drop=<span class="kw">True</span>)
+
+<span class="fn">print</span>(<span class="st">"Shape:"</span>, df.shape)
+<span class="fn">print</span>(<span class="st">"\nFirst 5 rows:\n"</span>, df.<span class="fn">head</span>())</pre>
+        <button class="copy-btn" onclick="copyCode('code-q3a', this)">Copy</button>
+      </div>
+
+      <div class="task-answer">
+        <div class="task-heading">(b) Feature Engineering</div>
+        <pre id="code-q3b"><span class="cm"># Extract temporal features from the datetime column</span>
+df[<span class="st">'month_num'</span>] = df[<span class="st">'month'</span>].dt.month
+df[<span class="st">'year'</span>]      = df[<span class="st">'month'</span>].dt.year
+
+<span class="cm"># Lag feature: previous month's revenue</span>
+df[<span class="st">'lag_1_revenue'</span>] = df[<span class="st">'sales_revenue'</span>].<span class="fn">shift</span>(<span class="nm">1</span>)
+
+<span class="cm"># Rolling mean: 3-month window</span>
+df[<span class="st">'rolling_3_revenue'</span>] = df[<span class="st">'sales_revenue'</span>].<span class="fn">shift</span>(<span class="nm">1</span>).<span class="fn">rolling</span>(window=<span class="nm">3</span>).<span class="fn">mean</span>()
+
+<span class="cm"># Encode the season column</span>
+df = pd.<span class="fn">get_dummies</span>(df, columns=[<span class="st">'season'</span>], drop_first=<span class="kw">True</span>)
+
+<span class="fn">print</span>(<span class="st">"Features after engineering:\n"</span>, df.<span class="fn">head</span>(<span class="nm">6</span>))</pre>
+        <button class="copy-btn" onclick="copyCode('code-q3b', this)">Copy</button>
+      </div>
+
+      <div class="task-answer">
+        <div class="task-heading">(c) Define Features, Target & Train-Test Split</div>
+        <pre id="code-q3c"><span class="cm"># Drop rows with NaN from lag/rolling features</span>
+df = df.<span class="fn">dropna</span>().<span class="fn">reset_index</span>(drop=<span class="kw">True</span>)
+
+feature_cols = [c <span class="kw">for</span> c <span class="kw">in</span> df.columns
+                <span class="kw">if</span> c <span class="kw">not in</span> [<span class="st">'month'</span>, <span class="st">'sales_revenue'</span>]]
+
+X = df[feature_cols]
+y = df[<span class="st">'sales_revenue'</span>]
+
+<span class="cm"># Time-aware split: last 4 rows are the test set</span>
+X_train, X_test = X.<span class="fn">iloc</span>[:<span class="op">-</span><span class="nm">4</span>], X.<span class="fn">iloc</span>[<span class="op">-</span><span class="nm">4</span>:]
+y_train, y_test = y.<span class="fn">iloc</span>[:<span class="op">-</span><span class="nm">4</span>], y.<span class="fn">iloc</span>[<span class="op">-</span><span class="nm">4</span>:]
+
+<span class="fn">print</span>(<span class="st">f"Train size: {<span class="fn">len</span>(X_train)}, Test size: {<span class="fn">len</span>(X_test)}"</span>)
+<span class="fn">print</span>(<span class="st">"Feature columns:"</span>, <span class="fn">list</span>(feature_cols))</pre>
+        <button class="copy-btn" onclick="copyCode('code-q3c', this)">Copy</button>
+      </div>
+
+      <div class="task-answer">
+        <div class="task-heading">(d) Preprocessing and Model Training</div>
+        <pre id="code-q3d"><span class="kw">from</span> sklearn.pipeline <span class="kw">import</span> Pipeline
+<span class="kw">from</span> sklearn.preprocessing <span class="kw">import</span> StandardScaler
+<span class="kw">from</span> sklearn.ensemble <span class="kw">import</span> GradientBoostingRegressor
+
+model_pipeline = <span class="fn">Pipeline</span>(steps=[
+    (<span class="st">'scaler'</span>, <span class="fn">StandardScaler</span>()),
+    (<span class="st">'model'</span>, <span class="fn">GradientBoostingRegressor</span>(n_estimators=<span class="nm">100</span>, random_state=<span class="nm">42</span>))
+])
+
+model_pipeline.<span class="fn">fit</span>(X_train, y_train)
+<span class="fn">print</span>(<span class="st">"Model trained successfully."</span>)</pre>
+        <button class="copy-btn" onclick="copyCode('code-q3d', this)">Copy</button>
+      </div>
+
+      <div class="task-answer">
+        <div class="task-heading">(e) Evaluation</div>
+        <pre id="code-q3e"><span class="kw">import</span> numpy <span class="kw">as</span> np
+<span class="kw">from</span> sklearn.metrics <span class="kw">import</span> mean_absolute_error, mean_squared_error, r2_score
+
+y_pred = model_pipeline.<span class="fn">predict</span>(X_test)
+
+mae  = <span class="fn">mean_absolute_error</span>(y_test, y_pred)
+rmse = np.<span class="fn">sqrt</span>(<span class="fn">mean_squared_error</span>(y_test, y_pred))
+r2   = <span class="fn">r2_score</span>(y_test, y_pred)
+
+<span class="fn">print</span>(<span class="st">f"MAE  : {<span class="fn">round</span>(mae,  2)}"</span>)
+<span class="fn">print</span>(<span class="st">f"RMSE : {<span class="fn">round</span>(rmse, 2)}"</span>)
+<span class="fn">print</span>(<span class="st">f"R²   : {<span class="fn">round</span>(r2,   4)}"</span>)</pre>
+        <button class="copy-btn" onclick="copyCode('code-q3e', this)">Copy</button>
+      </div>
+
+      <div class="task-answer">
+        <div class="task-heading">(f) Actual vs Predicted Plot</div>
+        <pre id="code-q3f"><span class="kw">import</span> matplotlib.pyplot <span class="kw">as</span> plt
+
+test_months = df[<span class="st">'month'</span>].<span class="fn">iloc</span>[<span class="op">-</span><span class="nm">4</span>:]
+
+plt.<span class="fn">figure</span>(figsize=(<span class="nm">8</span>, <span class="nm">4</span>))
+plt.<span class="fn">plot</span>(df[<span class="st">'month'</span>], y, label=<span class="st">'Actual'</span>, color=<span class="st">'steelblue'</span>, marker=<span class="st">'o'</span>)
+plt.<span class="fn">plot</span>(test_months, y_pred, label=<span class="st">'Predicted'</span>, color=<span class="st">'#e3472e'</span>, marker=<span class="st">'s'</span>, linestyle=<span class="st">'--'</span>)
+plt.<span class="fn">xlabel</span>(<span class="st">'Month'</span>)
+plt.<span class="fn">ylabel</span>(<span class="st">'Sales Revenue'</span>)
+plt.<span class="fn">title</span>(<span class="st">'Actual vs Predicted Sales Revenue'</span>)
+plt.<span class="fn">legend</span>()
+plt.<span class="fn">xticks</span>(rotation=<span class="nm">45</span>)
+plt.<span class="fn">tight_layout</span>()
+plt.<span class="fn">show</span>()</pre>
+        <button class="copy-btn" onclick="copyCode('code-q3f', this)">Copy</button>
+      </div>
+      <div class="score-bar"><div class="score-icon"></div><span class="score-text">Total Marks: 15</span></div>
+    </div>
+
+    <hr class="divider">
+
+    <!-- ── Q4 ── -->
+    <div class="q-block" id="q4">
+      <div class="q-label">Question 4</div>
+      <div class="q-title">Feature Selection & Regularisation on Housing Price Dataset</div>
+
+      <div class="task-answer">
+        <div class="task-heading">(a) Load and Inspect the Data</div>
+        <pre id="code-q4a"><span class="kw">import</span> pandas <span class="kw">as</span> pd
+<span class="kw">import</span> io
+
+csv_data = <span class="st">"""area_sqft,bedrooms,bathrooms,floors,age_years,garage,pool,location,school_rating,crime_index,price
+1200,2,1,1,18,No,No,Suburban,6,4.2,185000
+2400,4,3,2,5,Yes,Yes,Urban,8,2.1,480000
+950,1,1,1,30,No,No,Rural,5,5.8,110000
+1800,3,2,2,10,Yes,No,Suburban,7,3.5,295000
+3200,5,4,3,2,Yes,Yes,Urban,9,1.5,680000
+1100,2,1,1,22,No,No,Rural,5,6.1,125000
+2100,3,2,2,8,Yes,No,Suburban,7,3.0,350000
+2800,4,3,2,3,Yes,Yes,Urban,9,1.8,590000
+870,1,1,1,35,No,No,Rural,4,7.2,98000
+1650,3,2,1,14,No,No,Suburban,6,4.0,260000
+3500,5,4,3,1,Yes,Yes,Urban,10,1.2,750000
+1400,2,2,1,12,Yes,No,Suburban,7,3.8,230000
+980,2,1,1,28,No,No,Rural,5,5.5,115000
+2600,4,3,2,6,Yes,Yes,Urban,8,2.3,520000
+1750,3,2,2,9,Yes,No,Suburban,7,3.2,310000
+3100,5,3,3,3,Yes,Yes,Urban,9,1.6,640000
+1050,2,1,1,25,No,No,Rural,5,6.0,120000
+2200,3,2,2,7,Yes,No,Suburban,8,2.8,380000
+900,1,1,1,32,No,No,Rural,4,7.0,105000
+2950,4,3,3,4,Yes,Yes,Urban,9,1.9,615000"""</span>
+
+df = pd.<span class="fn">read_csv</span>(io.<span class="fn">StringIO</span>(csv_data))
+
+<span class="fn">print</span>(<span class="st">"Shape:"</span>, df.shape)
+<span class="fn">print</span>(<span class="st">"\nData Types:\n"</span>, df.dtypes)
+<span class="fn">print</span>(<span class="st">"\nMissing Values:\n"</span>, df.<span class="fn">isnull</span>().<span class="fn">sum</span>())</pre>
+        <button class="copy-btn" onclick="copyCode('code-q4a', this)">Copy</button>
+      </div>
+
+      <div class="task-answer">
+        <div class="task-heading">(b) Define Features and Target</div>
+        <pre id="code-q4b">X = df.<span class="fn">drop</span>(columns=[<span class="st">'price'</span>])
+y = df[<span class="st">'price'</span>]
+
+<span class="fn">print</span>(<span class="st">"Features shape:"</span>, X.shape)
+<span class="fn">print</span>(<span class="st">"Target range:"</span>, y.<span class="fn">min</span>(), <span class="st">"–"</span>, y.<span class="fn">max</span>())</pre>
+        <button class="copy-btn" onclick="copyCode('code-q4b', this)">Copy</button>
+      </div>
+
+      <div class="task-answer">
+        <div class="task-heading">(c) Preprocessing Pipeline</div>
+        <pre id="code-q4c"><span class="kw">from</span> sklearn.compose <span class="kw">import</span> ColumnTransformer
+<span class="kw">from</span> sklearn.preprocessing <span class="kw">import</span> StandardScaler, OrdinalEncoder, OneHotEncoder
+
+binary_cols     = [<span class="st">'garage'</span>, <span class="st">'pool'</span>]
+categorical_col = [<span class="st">'location'</span>]
+numerical_cols  = [<span class="st">'area_sqft'</span>, <span class="st">'bedrooms'</span>, <span class="st">'bathrooms'</span>, <span class="st">'floors'</span>,
+                   <span class="st">'age_years'</span>, <span class="st">'school_rating'</span>, <span class="st">'crime_index'</span>]
+
+preprocessor = <span class="fn">ColumnTransformer</span>(transformers=[
+    (<span class="st">'num'</span>,    <span class="fn">StandardScaler</span>(),                         numerical_cols),
+    (<span class="st">'binary'</span>, <span class="fn">OrdinalEncoder</span>(),                          binary_cols),
+    (<span class="st">'ohe'</span>,    <span class="fn">OneHotEncoder</span>(drop=<span class="st">'first'</span>, sparse_output=<span class="kw">False</span>), categorical_col)
+])
+
+<span class="fn">print</span>(<span class="st">"Preprocessor configured."</span>)</pre>
+        <button class="copy-btn" onclick="copyCode('code-q4c', this)">Copy</button>
+      </div>
+
+      <div class="task-answer">
+        <div class="task-heading">(d) Train-Test Split</div>
+        <pre id="code-q4d"><span class="kw">from</span> sklearn.model_selection <span class="kw">import</span> train_test_split
+
+X_train, X_test, y_train, y_test = <span class="fn">train_test_split</span>(
+    X, y, test_size=<span class="nm">0.2</span>, random_state=<span class="nm">42</span>
+)
+<span class="fn">print</span>(<span class="st">f"Train: {<span class="fn">len</span>(X_train)} samples | Test: {<span class="fn">len</span>(X_test)} samples"</span>)</pre>
+        <button class="copy-btn" onclick="copyCode('code-q4d', this)">Copy</button>
+      </div>
+
+      <div class="task-answer">
+        <div class="task-heading">(e) Ridge vs Lasso with Cross-Validation</div>
+        <pre id="code-q4e"><span class="kw">from</span> sklearn.pipeline <span class="kw">import</span> Pipeline
+<span class="kw">from</span> sklearn.linear_model <span class="kw">import</span> Ridge, Lasso
+<span class="kw">from</span> sklearn.model_selection <span class="kw">import</span> cross_val_score
+<span class="kw">import</span> numpy <span class="kw">as</span> np
+
+ridge_pipeline = <span class="fn">Pipeline</span>([(<span class="st">'pre'</span>, preprocessor), (<span class="st">'model'</span>, <span class="fn">Ridge</span>(alpha=<span class="nm">1.0</span>))])
+lasso_pipeline = <span class="fn">Pipeline</span>([(<span class="st">'pre'</span>, preprocessor), (<span class="st">'model'</span>, <span class="fn">Lasso</span>(alpha=<span class="nm">500</span>))])
+
+ridge_cv = <span class="fn">cross_val_score</span>(ridge_pipeline, X_train, y_train, cv=<span class="nm">5</span>, scoring=<span class="st">'r2'</span>)
+lasso_cv = <span class="fn">cross_val_score</span>(lasso_pipeline, X_train, y_train, cv=<span class="nm">5</span>, scoring=<span class="st">'r2'</span>)
+
+<span class="fn">print</span>(<span class="st">f"Ridge CV R² – Mean: {<span class="fn">round</span>(ridge_cv.mean(), 4)}, Std: {<span class="fn">round</span>(ridge_cv.std(), 4)}"</span>)
+<span class="fn">print</span>(<span class="st">f"Lasso CV R² – Mean: {<span class="fn">round</span>(lasso_cv.mean(), 4)}, Std: {<span class="fn">round</span>(lasso_cv.std(), 4)}"</span>)
+
+ridge_pipeline.<span class="fn">fit</span>(X_train, y_train)
+lasso_pipeline.<span class="fn">fit</span>(X_train, y_train)</pre>
+        <button class="copy-btn" onclick="copyCode('code-q4e', this)">Copy</button>
+      </div>
+
+      <div class="task-answer">
+        <div class="task-heading">(f) Lasso Feature Importance</div>
+        <pre id="code-q4f"><span class="kw">import</span> numpy <span class="kw">as</span> np
+
+ohe_features   = lasso_pipeline.named_steps[<span class="st">'pre'</span>].<span class="fn">named_transformers_</span>[<span class="st">'ohe'</span>].<span class="fn">get_feature_names_out</span>([<span class="st">'location'</span>])
+feature_names  = numerical_cols + binary_cols + <span class="fn">list</span>(ohe_features)
+lasso_coefs    = lasso_pipeline.named_steps[<span class="st">'model'</span>].coef_
+
+coef_df = pd.<span class="fn">DataFrame</span>({<span class="st">'Feature'</span>: feature_names, <span class="st">'Coefficient'</span>: lasso_coefs})
+coef_df[<span class="st">'Abs_Coef'</span>] = coef_df[<span class="st">'Coefficient'</span>].<span class="fn">abs</span>()
+coef_df = coef_df.<span class="fn">sort_values</span>(<span class="st">'Abs_Coef'</span>, ascending=<span class="kw">False</span>)
+
+<span class="fn">print</span>(<span class="st">"Lasso Coefficients:\n"</span>, coef_df.<span class="fn">to_string</span>(index=<span class="kw">False</span>))
+
+zeroed = coef_df[coef_df[<span class="st">'Coefficient'</span>] <span class="op">==</span> <span class="nm">0</span>][<span class="st">'Feature'</span>].<span class="fn">tolist</span>()
+<span class="fn">print</span>(<span class="st">f"\nFeatures zeroed out by Lasso: {zeroed}"</span>)</pre>
+        <button class="copy-btn" onclick="copyCode('code-q4f', this)">Copy</button>
+      </div>
+
+      <div class="task-answer">
+        <div class="task-heading">(g) Evaluation – Ridge vs Lasso</div>
+        <pre id="code-q4g"><span class="kw">from</span> sklearn.metrics <span class="kw">import</span> mean_absolute_error, mean_squared_error, r2_score
+<span class="kw">import</span> numpy <span class="kw">as</span> np
+
+<span class="kw">for</span> name, pipe <span class="kw">in</span> [(<span class="st">'Ridge'</span>, ridge_pipeline), (<span class="st">'Lasso'</span>, lasso_pipeline)]:
+    y_pred = pipe.<span class="fn">predict</span>(X_test)
+    mae  = <span class="fn">mean_absolute_error</span>(y_test, y_pred)
+    rmse = np.<span class="fn">sqrt</span>(<span class="fn">mean_squared_error</span>(y_test, y_pred))
+    r2   = <span class="fn">r2_score</span>(y_test, y_pred)
+    <span class="fn">print</span>(<span class="st">f"{name} → MAE: {<span class="fn">round</span>(mae,2)}, RMSE: {<span class="fn">round</span>(rmse,2)}, R²: {<span class="fn">round</span>(r2,4)}"</span>)
+
+<span class="cm"># Ridge retains all features with small coefficients → better generalisation
+# on small datasets. Lasso zeros some features → useful for feature selection
+# but can underfit if the alpha is too high.</span></pre>
+        <button class="copy-btn" onclick="copyCode('code-q4g', this)">Copy</button>
+      </div>
+      <div class="score-bar"><div class="score-icon"></div><span class="score-text">Total Marks: 15</span></div>
+    </div>
+
+    <hr class="divider">
+
+    <!-- ── Q5 ── -->
+    <div class="q-block" id="q5">
+      <div class="q-label">Question 5</div>
+      <div class="q-title">NLP Sentiment Analysis on Product Reviews</div>
+
+      <div class="task-answer">
+        <div class="task-heading">(a) Load and Inspect the Data</div>
+        <pre id="code-q5a"><span class="kw">import</span> pandas <span class="kw">as</span> pd
+<span class="kw">import</span> io
+
+csv_data = <span class="st">"""review_id,review_text,word_count,exclamation_marks,has_question,rating,sentiment
+R001,Absolutely love this product works perfectly,6,0,No,5,positive
+R002,Terrible quality broke after two days,6,0,No,1,negative
+R003,Decent product for the price nothing special,7,0,No,3,neutral
+R004,Amazing fast delivery great packaging highly recommend,7,0,No,5,positive
+R005,Disappointed does not match description at all,7,0,No,2,negative
+R006,Works as expected average quality,5,0,No,3,neutral
+R007,Best purchase I have made this year outstanding,8,0,No,5,positive
+R008,Stopped working after one week very frustrating,7,0,No,1,negative
+R009,Pretty good value for money would buy again,8,0,No,4,positive
+R010,Mediocre build quality feels cheap,5,0,No,2,negative
+R011,Excellent product exceeded my expectations,5,0,No,5,positive
+R012,Okay nothing impressive but does the job,7,0,No,3,neutral
+R013,Horrible experience customer service was unhelpful,6,0,No,1,negative
+R014,Fantastic item arrived quickly and works great,7,0,No,5,positive
+R015,Not worth the money poor materials used,7,0,No,2,negative
+R016,Fine product does what it says on the tin,9,0,No,3,neutral
+R017,Outstanding quality and super fast shipping loved it,7,0,No,5,positive
+R018,Returned immediately did not work out of box,7,0,No,1,negative
+R019,Good product minor issues but overall satisfied,7,0,No,4,positive
+R020,Average product expected better for this price,7,0,No,3,neutral"""</span>
+
+df = pd.<span class="fn">read_csv</span>(io.<span class="fn">StringIO</span>(csv_data))
+df = df.<span class="fn">drop</span>(columns=[<span class="st">'review_id'</span>])   <span class="cm"># drop ID</span>
+
+<span class="fn">print</span>(<span class="st">"Shape:"</span>, df.shape)
+<span class="fn">print</span>(<span class="st">"\nClass Distribution:\n"</span>, df[<span class="st">'sentiment'</span>].<span class="fn">value_counts</span>())</pre>
+        <button class="copy-btn" onclick="copyCode('code-q5a', this)">Copy</button>
+      </div>
+
+      <div class="task-answer">
+        <div class="task-heading">(b) Text Vectorisation & Feature Combination</div>
+        <pre id="code-q5b"><span class="kw">import</span> numpy <span class="kw">as</span> np
+<span class="kw">import</span> scipy.sparse <span class="kw">as</span> sp
+<span class="kw">from</span> sklearn.feature_extraction.text <span class="kw">import</span> TfidfVectorizer
+<span class="kw">from</span> sklearn.preprocessing <span class="kw">import</span> LabelEncoder
+
+<span class="cm"># Encode the binary has_question column</span>
+df[<span class="st">'has_question_enc'</span>] = (df[<span class="st">'has_question'</span>] <span class="op">==</span> <span class="st">'Yes'</span>).<span class="fn">astype</span>(<span class="nm">int</span>)
+
+<span class="cm"># TF-IDF on raw review text</span>
+tfidf = <span class="fn">TfidfVectorizer</span>(max_features=<span class="nm">50</span>, stop_words=<span class="st">'english'</span>)
+X_text = tfidf.<span class="fn">fit_transform</span>(df[<span class="st">'review_text'</span>])
+
+<span class="cm"># Numerical meta-features as sparse matrix</span>
+meta_cols = [<span class="st">'word_count'</span>, <span class="st">'exclamation_marks'</span>, <span class="st">'has_question_enc'</span>]
+X_meta    = sp.csr_matrix(df[meta_cols].<span class="fn">values</span>)
+
+<span class="cm"># Combine TF-IDF and meta features horizontally</span>
+X = sp.<span class="fn">hstack</span>([X_text, X_meta])
+y = df[<span class="st">'sentiment'</span>]
+
+<span class="fn">print</span>(<span class="st">"Combined feature matrix shape:"</span>, X.shape)</pre>
+        <button class="copy-btn" onclick="copyCode('code-q5b', this)">Copy</button>
+      </div>
+
+      <div class="task-answer">
+        <div class="task-heading">(c) Train-Test Split</div>
+        <pre id="code-q5c"><span class="kw">from</span> sklearn.model_selection <span class="kw">import</span> train_test_split
+
+X_train, X_test, y_train, y_test = <span class="fn">train_test_split</span>(
+    X, y, test_size=<span class="nm">0.2</span>, random_state=<span class="nm">42</span>, stratify=y
+)
+<span class="fn">print</span>(<span class="st">f"Train: {X_train.shape[0]} samples | Test: {X_test.shape[0]} samples"</span>)</pre>
+        <button class="copy-btn" onclick="copyCode('code-q5c', this)">Copy</button>
+      </div>
+
+      <div class="task-answer">
+        <div class="task-heading">(d) Model Training</div>
+        <pre id="code-q5d"><span class="kw">from</span> sklearn.linear_model <span class="kw">import</span> LogisticRegression
+
+clf = <span class="fn">LogisticRegression</span>(
+    multi_class=<span class="st">'multinomial'</span>,
+    solver=<span class="st">'lbfgs'</span>,
+    max_iter=<span class="nm">500</span>,
+    random_state=<span class="nm">42</span>
+)
+clf.<span class="fn">fit</span>(X_train, y_train)
+<span class="fn">print</span>(<span class="st">"Logistic Regression trained. Classes:"</span>, clf.classes_)</pre>
+        <button class="copy-btn" onclick="copyCode('code-q5d', this)">Copy</button>
+      </div>
+
+      <div class="task-answer">
+        <div class="task-heading">(e) Evaluation</div>
+        <pre id="code-q5e"><span class="kw">from</span> sklearn.metrics <span class="kw">import</span> (classification_report, confusion_matrix,
+                               accuracy_score)
+
+y_pred = clf.<span class="fn">predict</span>(X_test)
+
+<span class="fn">print</span>(<span class="st">"Accuracy:"</span>, <span class="fn">round</span>(<span class="fn">accuracy_score</span>(y_test, y_pred), <span class="nm">4</span>))
+<span class="fn">print</span>(<span class="st">"\nClassification Report:\n"</span>,
+      <span class="fn">classification_report</span>(y_test, y_pred, target_names=clf.classes_))
+<span class="fn">print</span>(<span class="st">"Confusion Matrix:\n"</span>,
+      <span class="fn">confusion_matrix</span>(y_test, y_pred, labels=clf.classes_))</pre>
+        <button class="copy-btn" onclick="copyCode('code-q5e', this)">Copy</button>
+      </div>
+
+      <div class="task-answer">
+        <div class="task-heading">(f) Top TF-IDF Terms per Sentiment Class</div>
+        <pre id="code-q5f"><span class="kw">import</span> numpy <span class="kw">as</span> np
+
+tfidf_feature_names = np.<span class="fn">array</span>(tfidf.<span class="fn">get_feature_names_out</span>())
+top_n = <span class="nm">5</span>
+
+<span class="fn">print</span>(<span class="st">f"Top {top_n} TF-IDF terms per sentiment class:\n"</span>)
+<span class="kw">for</span> i, cls <span class="kw">in</span> <span class="fn">enumerate</span>(clf.classes_):
+    <span class="cm"># Coefficients only for TF-IDF columns (first 50)</span>
+    coefs       = clf.coef_[i, :<span class="fn">len</span>(tfidf_feature_names)]
+    top_indices = np.<span class="fn">argsort</span>(coefs)[:<span class="op">-</span>(top_n <span class="op">+</span> <span class="nm">1</span>):<span class="op">-</span><span class="nm">1</span>]
+    top_terms   = tfidf_feature_names[top_indices]
+    <span class="fn">print</span>(<span class="st">f"  {cls.upper()}: {', '.join(top_terms)}"</span>)</pre>
+        <button class="copy-btn" onclick="copyCode('code-q5f', this)">Copy</button>
+      </div>
+      <div class="score-bar"><div class="score-icon"></div><span class="score-text">Total Marks: 15</span></div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+function copyCode(id, btn) {
+  const el = document.getElementById(id);
+  const text = el.innerText;
+  navigator.clipboard.writeText(text).then(() => {
+    btn.textContent = 'Copied!';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 1800);
+  });
+}
+
+function scrollTo(id) {
+  document.getElementById(id).scrollIntoView({ behavior: 'smooth', block: 'start' });
+  document.querySelectorAll('.nav-list a').forEach(a => a.classList.remove('active'));
+  document.getElementById('nav-' + id).classList.add('active');
+}
+
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      const id = e.target.id;
+      document.querySelectorAll('.nav-list a').forEach(a => a.classList.remove('active'));
+      const nav = document.getElementById('nav-' + id);
+      if (nav) nav.classList.add('active');
+    }
+  });
+}, { threshold: 0.3 });
+
+['q1','q2','q3','q4','q5'].forEach(id => {
+  const el = document.getElementById(id);
+  if (el) observer.observe(el);
+});
+</script>
+</body>
+</html>
