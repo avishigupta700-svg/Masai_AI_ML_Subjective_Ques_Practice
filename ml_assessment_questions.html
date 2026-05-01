@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ML Assessment Questions</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', Arial, sans-serif; background: #f5f5f5; color: #222; font-size: 14px; }
+
+  .shell { display: flex; min-height: 100vh; }
+
+  .sidebar { width: 200px; background: #fff; border-right: 1px solid #ddd; padding: 16px; flex-shrink: 0; }
+  .sidebar h3 { font-size: 12px; color: #555; margin-bottom: 10px; font-weight: 600; }
+  .nav-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 4px; }
+  .nav-btn { width: 28px; height: 28px; border: 1px solid #ccc; background: #fff; border-radius: 4px; font-size: 11px; cursor: pointer; display: flex; align-items: center; justify-content: center; color: #333; }
+  .nav-btn.active { background: #1a56db; color: #fff; border-color: #1a56db; }
+  .nav-btn:hover { background: #e8f0fe; }
+
+  .main { flex: 1; padding: 24px; max-width: 800px; }
+
+  .q-card { background: #fff; border: 1px solid #ddd; border-radius: 6px; padding: 24px; margin-bottom: 24px; display: none; }
+  .q-card.visible { display: block; }
+
+  .q-card h1 { font-size: 20px; font-weight: 700; color: #111; margin-bottom: 6px; }
+  .q-card .intro { color: #444; margin-bottom: 12px; font-size: 13px; }
+
+  .dataset-label { font-size: 14px; font-weight: 700; margin-bottom: 8px; }
+  .dataset-label code { background: #f0f0f0; padding: 2px 6px; border-radius: 4px; font-size: 13px; }
+
+  .csv-box { background: #1e1e2e; color: #cdd6f4; font-family: 'Courier New', monospace; font-size: 11px; padding: 12px; border-radius: 6px; overflow-x: auto; white-space: pre; margin-bottom: 16px; line-height: 1.6; }
+
+  .contains-label { color: #555; font-size: 13px; margin-bottom: 4px; }
+  .contains-list { list-style: disc; padding-left: 20px; margin-bottom: 16px; }
+  .contains-list li { color: #444; font-size: 13px; margin-bottom: 2px; }
+
+  .tasks-title { font-size: 17px; font-weight: 700; margin-bottom: 8px; border-top: 1px solid #eee; padding-top: 14px; }
+  .tasks-intro { font-size: 13px; color: #555; margin-bottom: 14px; }
+
+  .task-section { margin-bottom: 14px; }
+  .task-section h3 { font-size: 14px; font-weight: 700; color: #111; margin-bottom: 6px; }
+  .task-section ul { list-style: disc; padding-left: 20px; }
+  .task-section li { font-size: 13px; color: #444; margin-bottom: 3px; }
+
+  .section-divider { border: none; border-top: 1px solid #eee; margin: 14px 0; }
+
+  .instructions-title { font-size: 17px; font-weight: 700; margin: 16px 0 8px; }
+  .instructions-list { list-style: disc; padding-left: 20px; margin-bottom: 16px; }
+  .instructions-list li { font-size: 13px; color: #444; margin-bottom: 3px; }
+  .instructions-list ul { list-style: circle; padding-left: 18px; margin-top: 4px; }
+
+  .score-bar { display: flex; align-items: center; gap: 8px; background: #fafafa; border: 1px solid #ddd; border-radius: 4px; padding: 8px 12px; margin-top: 16px; }
+  .score-icon { width: 18px; height: 18px; background: #1a56db; border-radius: 3px; }
+  .score-text { font-size: 13px; font-weight: 600; color: #333; }
+
+  .nav-footer { display: flex; justify-content: flex-end; gap: 8px; margin-top: 20px; }
+  .nav-footer button { padding: 7px 18px; border-radius: 4px; font-size: 13px; cursor: pointer; border: 1px solid #bbb; background: #fff; color: #333; }
+  .nav-footer button.primary { background: #1a56db; color: #fff; border-color: #1a56db; }
+  .nav-footer button:hover { opacity: 0.85; }
+
+  .logo { font-size: 16px; font-weight: 800; color: #1a56db; margin-bottom: 20px; letter-spacing: -0.5px; }
+  .q-number { font-size: 11px; color: #999; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.5px; }
+</style>
+</head>
+<body>
+<div class="shell">
+  <div class="sidebar">
+    <div class="logo">masai.</div>
+    <h3>Module 1 Evaluation – Attempt: 1</h3>
+    <p style="font-size:11px;color:#777;margin-bottom:8px;">Section : Module 1 Evaluation – Attempt: 1</p>
+    <div class="nav-grid" id="navGrid"></div>
+  </div>
+
+  <div class="main" id="mainContent"></div>
+</div>
+
+<script>
+const questions = [
+  {
+    title: "Practical Assignment: Multi-Class Classification on Student Performance Dataset",
+    intro: "You are given the following small synthetic student performance dataset. Treat this as the content of a CSV file named <code>students.csv</code>.",
+    datasetName: "students.csv",
+    csv: `study_hours,attendance_pct,assignments_done,prev_score,parental_edu,internet_access,grade
+2.5,72,8,55,High School,Yes,C
+5.0,91,15,78,Graduate,Yes,A
+1.0,50,4,38,Primary,No,F
+3.5,80,12,65,College,Yes,B
+6.0,95,18,88,Graduate,Yes,A
+1.5,58,6,44,Primary,No,F
+4.0,85,14,71,College,Yes,B
+2.0,65,9,52,High School,Yes,C
+5.5,93,17,85,Graduate,Yes,A
+1.2,55,5,40,Primary,No,F
+3.0,76,11,62,College,Yes,B
+4.5,88,16,80,Graduate,Yes,A
+2.8,70,10,57,High School,Yes,C
+1.8,60,7,46,High School,No,F
+5.2,92,16,83,Graduate,Yes,A
+3.2,79,12,64,College,Yes,B
+0.8,48,3,35,Primary,No,F
+4.2,86,15,74,College,Yes,B
+2.3,68,8,53,High School,Yes,C
+5.8,94,18,87,Graduate,Yes,A`,
+    contains: [
+      "Numerical columns (study hours, attendance, assignments, previous score)",
+      "Categorical columns (parental education, internet access)",
+      "One multi-class target column named <strong>grade</strong> (A, B, C, F)"
+    ],
+    taskIntro: "Write Python code to build and evaluate a multi-class classification pipeline using this dataset.",
+    tasks: [
+      {
+        heading: "(a) Load and Inspect the Data [2 Marks]",
+        items: [
+          "Load the dataset into a pandas DataFrame",
+          "Display the shape, data types, and first few rows"
+        ]
+      },
+      {
+        heading: "(b) Define Features and Target [2 Marks]",
+        items: [
+          "Separate the input features (X)",
+          "Separate the target variable (y)"
+        ]
+      },
+      {
+        heading: "(c) Data Preprocessing [4 Marks]",
+        items: [
+          "Encode categorical input features using an appropriate encoder",
+          "Scale numerical features",
+          "Use a proper ColumnTransformer pipeline"
+        ]
+      },
+      {
+        heading: "(d) Train-Test Split [2 Marks]",
+        items: ["Split the dataset into training and testing sets with stratification"]
+      },
+      {
+        heading: "(e) Model Training [2 Marks]",
+        items: ["Train a multi-class classification model using scikit-learn"]
+      },
+      {
+        heading: "(f) Evaluation [3 Marks]",
+        items: [
+          "Generate predictions on the test set",
+          "Evaluate model performance using: Classification Report, Confusion Matrix, and Overall Accuracy"
+        ]
+      }
+    ]
+  },
+  {
+    title: "Practical Assignment: Customer Segmentation using K-Means Clustering",
+    intro: "You are given the following small synthetic e-commerce customer dataset. Treat this as the content of a CSV file named <code>customers.csv</code>.",
+    datasetName: "customers.csv",
+    csv: `customer_id,age,annual_income,spending_score,purchase_frequency,avg_order_value,returns_count
+C001,25,32000,72,18,1200,1
+C002,47,85000,28,6,4500,0
+C003,31,54000,61,14,2200,2
+C004,52,120000,15,3,8000,0
+C005,28,41000,78,22,950,3
+C006,36,67000,45,10,3100,1
+C007,22,28000,88,25,750,4
+C008,44,92000,32,7,5200,0
+C009,33,59000,55,12,2600,1
+C010,58,140000,11,2,9500,0
+C011,26,38000,81,21,880,3
+C012,41,78000,38,9,4100,0
+C013,29,46000,70,17,1050,2
+C014,50,108000,20,4,6800,0
+C015,35,63000,50,11,2900,1
+C016,24,30000,85,23,810,3
+C017,48,96000,25,5,5700,0
+C018,32,52000,63,15,2100,2
+C019,27,39000,76,20,920,3
+C020,55,125000,13,3,8700,0`,
+    contains: [
+      "Numerical customer behaviour features",
+      "No target column — this is an unsupervised task"
+    ],
+    taskIntro: "Write Python code to segment customers using K-Means clustering.",
+    tasks: [
+      {
+        heading: "(a) Load and Inspect the Data [2 Marks]",
+        items: [
+          "Load the dataset into a pandas DataFrame (drop customer_id before modelling)",
+          "Display shape, data types, and descriptive statistics"
+        ]
+      },
+      {
+        heading: "(b) Feature Scaling [3 Marks]",
+        items: [
+          "Apply StandardScaler to all numerical features",
+          "Explain why scaling is important for K-Means"
+        ]
+      },
+      {
+        heading: "(c) Determine Optimal K [3 Marks]",
+        items: [
+          "Use the Elbow Method (inertia vs k) to find the optimal number of clusters",
+          "Plot the elbow curve using matplotlib"
+        ]
+      },
+      {
+        heading: "(d) Model Training [2 Marks]",
+        items: [
+          "Train a K-Means model with the optimal k",
+          "Assign cluster labels back to the original DataFrame"
+        ]
+      },
+      {
+        heading: "(e) Cluster Analysis [3 Marks]",
+        items: [
+          "Print the mean feature values per cluster",
+          "Interpret each cluster with a brief description (e.g., 'High-income low-spenders')",
+          "Compute the Silhouette Score to assess clustering quality"
+        ]
+      },
+      {
+        heading: "(f) Visualisation [2 Marks]",
+        items: [
+          "Reduce features to 2D using PCA",
+          "Create a scatter plot coloured by cluster label"
+        ]
+      }
+    ]
+  },
+  {
+    title: "Practical Assignment: Time-Series Forecasting on Monthly Sales Data",
+    intro: "You are given the following synthetic monthly sales dataset. Treat this as the content of a CSV file named <code>sales_data.csv</code>.",
+    datasetName: "sales_data.csv",
+    csv: `month,units_sold,marketing_spend,avg_price,competitor_price,season,sales_revenue
+2023-01,420,12000,85,90,Winter,35700
+2023-02,390,10500,85,88,Winter,33150
+2023-03,510,14000,83,87,Spring,42330
+2023-04,580,16000,82,86,Spring,47560
+2023-05,640,18000,80,85,Spring,51200
+2023-06,720,21000,78,84,Summer,56160
+2023-07,780,24000,77,83,Summer,60060
+2023-08,750,22500,77,82,Summer,57750
+2023-09,610,17000,80,85,Autumn,48800
+2023-10,530,14500,82,87,Autumn,43460
+2023-11,680,20000,84,89,Autumn,57120
+2023-12,820,28000,88,93,Winter,72160
+2024-01,450,13000,86,91,Winter,38700
+2024-02,410,11000,86,89,Winter,35260
+2024-03,540,15000,84,88,Spring,45360
+2024-04,620,17500,83,87,Spring,51460
+2024-05,690,19500,81,86,Spring,55890
+2024-06,770,23000,79,85,Summer,60830
+2024-07,830,26000,78,84,Summer,64740
+2024-08,800,24000,78,83,Summer,62400`,
+    contains: [
+      "A date column (month) to be used for temporal ordering",
+      "Numerical feature columns",
+      "One categorical column (season)",
+      "One continuous target column named <strong>sales_revenue</strong>"
+    ],
+    taskIntro: "Write Python code to build a time-aware regression pipeline to forecast monthly sales revenue.",
+    tasks: [
+      {
+        heading: "(a) Load and Prepare the Data [2 Marks]",
+        items: [
+          "Load the dataset and parse the month column as a datetime",
+          "Sort by month and inspect the data"
+        ]
+      },
+      {
+        heading: "(b) Feature Engineering [4 Marks]",
+        items: [
+          "Extract the month number and year from the datetime column",
+          "Create a lag feature: previous month's sales_revenue",
+          "Create a rolling mean feature (3-month window) on sales_revenue",
+          "Encode the season column appropriately"
+        ]
+      },
+      {
+        heading: "(c) Define Features and Target, Train-Test Split [2 Marks]",
+        items: [
+          "Drop rows with NaN values introduced by lag/rolling features",
+          "Use the last 4 rows as the test set; the rest as training"
+        ]
+      },
+      {
+        heading: "(d) Preprocessing and Model Training [3 Marks]",
+        items: [
+          "Scale numerical features",
+          "Train a regression model of your choice"
+        ]
+      },
+      {
+        heading: "(e) Evaluation [2 Marks]",
+        items: [
+          "Generate predictions on the test set",
+          "Report MAE, RMSE, and R² score"
+        ]
+      },
+      {
+        heading: "(f) Visualisation [2 Marks]",
+        items: [
+          "Plot actual vs predicted sales_revenue values using matplotlib"
+        ]
+      }
+    ]
+  },
+  {
+    title: "Practical Assignment: Feature Selection & Regularisation on Housing Price Dataset",
+    intro: "You are given the following synthetic housing dataset. Treat this as the content of a CSV file named <code>housing.csv</code>.",
+    datasetName: "housing.csv",
+    csv: `area_sqft,bedrooms,bathrooms,floors,age_years,garage,pool,location,school_rating,crime_index,price
+1200,2,1,1,18,No,No,Suburban,6,4.2,185000
+2400,4,3,2,5,Yes,Yes,Urban,8,2.1,480000
+950,1,1,1,30,No,No,Rural,5,5.8,110000
+1800,3,2,2,10,Yes,No,Suburban,7,3.5,295000
+3200,5,4,3,2,Yes,Yes,Urban,9,1.5,680000
+1100,2,1,1,22,No,No,Rural,5,6.1,125000
+2100,3,2,2,8,Yes,No,Suburban,7,3.0,350000
+2800,4,3,2,3,Yes,Yes,Urban,9,1.8,590000
+870,1,1,1,35,No,No,Rural,4,7.2,98000
+1650,3,2,1,14,No,No,Suburban,6,4.0,260000
+3500,5,4,3,1,Yes,Yes,Urban,10,1.2,750000
+1400,2,2,1,12,Yes,No,Suburban,7,3.8,230000
+980,2,1,1,28,No,No,Rural,5,5.5,115000
+2600,4,3,2,6,Yes,Yes,Urban,8,2.3,520000
+1750,3,2,2,9,Yes,No,Suburban,7,3.2,310000
+3100,5,3,3,3,Yes,Yes,Urban,9,1.6,640000
+1050,2,1,1,25,No,No,Rural,5,6.0,120000
+2200,3,2,2,7,Yes,No,Suburban,8,2.8,380000
+900,1,1,1,32,No,No,Rural,4,7.0,105000
+2950,4,3,3,4,Yes,Yes,Urban,9,1.9,615000`,
+    contains: [
+      "Numerical columns (area, bedrooms, bathrooms, floors, age, school rating, crime index)",
+      "Categorical columns (garage, pool, location)",
+      "One continuous target column named <strong>price</strong>"
+    ],
+    taskIntro: "Write Python code to build a regularised regression pipeline with feature analysis.",
+    tasks: [
+      {
+        heading: "(a) Load and Inspect the Data [2 Marks]",
+        items: [
+          "Load the dataset into a pandas DataFrame",
+          "Display shape, data types, and check for missing values"
+        ]
+      },
+      {
+        heading: "(b) Define Features and Target [1 Mark]",
+        items: [
+          "Separate input features (X) and target variable (y)"
+        ]
+      },
+      {
+        heading: "(c) Preprocessing Pipeline [3 Marks]",
+        items: [
+          "Encode binary categorical columns (garage, pool) with LabelEncoder or OrdinalEncoder",
+          "One-hot encode the location column",
+          "Scale all numerical features using StandardScaler"
+        ]
+      },
+      {
+        heading: "(d) Train-Test Split [1 Mark]",
+        items: ["Split the dataset into training and testing sets (80/20)"]
+      },
+      {
+        heading: "(e) Model Training with Regularisation [3 Marks]",
+        items: [
+          "Train a Ridge regression model",
+          "Train a Lasso regression model",
+          "Use cross-validation to compare the two models"
+        ]
+      },
+      {
+        heading: "(f) Feature Importance Analysis [2 Marks]",
+        items: [
+          "Extract and print the Lasso coefficients",
+          "Identify which features were effectively zeroed out"
+        ]
+      },
+      {
+        heading: "(g) Evaluation [3 Marks]",
+        items: [
+          "Report MAE, RMSE, and R² for both Ridge and Lasso on the test set",
+          "State which model performed better and why"
+        ]
+      }
+    ]
+  },
+  {
+    title: "Practical Assignment: NLP Sentiment Analysis on Product Reviews",
+    intro: "You are given the following synthetic product review dataset. Treat this as the content of a CSV file named <code>reviews.csv</code>.",
+    datasetName: "reviews.csv",
+    csv: `review_id,review_text,word_count,exclamation_marks,has_question,rating,sentiment
+R001,Absolutely love this product works perfectly,6,0,No,5,positive
+R002,Terrible quality broke after two days,6,0,No,1,negative
+R003,Decent product for the price nothing special,7,0,No,3,neutral
+R004,Amazing fast delivery great packaging highly recommend,7,0,No,5,positive
+R005,Disappointed does not match description at all,7,0,No,2,negative
+R006,Works as expected average quality,5,0,No,3,neutral
+R007,Best purchase I have made this year outstanding,8,0,No,5,positive
+R008,Stopped working after one week very frustrating,7,0,No,1,negative
+R009,Pretty good value for money would buy again,8,0,No,4,positive
+R010,Mediocre build quality feels cheap,5,0,No,2,negative
+R011,Excellent product exceeded my expectations,5,0,No,5,positive
+R012,Okay nothing impressive but does the job,7,0,No,3,neutral
+R013,Horrible experience customer service was unhelpful,6,0,No,1,negative
+R014,Fantastic item arrived quickly and works great,7,0,No,5,positive
+R015,Not worth the money poor materials used,7,0,No,2,negative
+R016,Fine product does what it says on the tin,9,0,No,3,neutral
+R017,Outstanding quality and super fast shipping loved it,7,0,No,5,positive
+R018,Returned immediately did not work out of box,7,0,No,1,negative
+R019,Good product minor issues but overall satisfied,7,0,No,4,positive
+R020,Average product expected better for this price,7,0,No,3,neutral`,
+    contains: [
+      "A raw text column (review_text) to be vectorised",
+      "Numerical meta-features (word_count, exclamation_marks)",
+      "A binary categorical feature (has_question)",
+      "One multi-class target column named <strong>sentiment</strong> (positive, neutral, negative)"
+    ],
+    taskIntro: "Write Python code to build a text-based sentiment classification pipeline.",
+    tasks: [
+      {
+        heading: "(a) Load and Inspect the Data [2 Marks]",
+        items: [
+          "Load the dataset (drop review_id before modelling)",
+          "Display class distribution of the sentiment column"
+        ]
+      },
+      {
+        heading: "(b) Text Vectorisation [4 Marks]",
+        items: [
+          "Apply TF-IDF vectorisation to the review_text column",
+          "Combine the TF-IDF matrix with the numerical meta-features (word_count, exclamation_marks) and encoded has_question using scipy.sparse.hstack or a FeatureUnion"
+        ]
+      },
+      {
+        heading: "(c) Train-Test Split [1 Mark]",
+        items: ["Split the combined feature matrix and target into training and testing sets"]
+      },
+      {
+        heading: "(d) Model Training [2 Marks]",
+        items: [
+          "Train a Logistic Regression or Naive Bayes classifier",
+          "Ensure multi-class support"
+        ]
+      },
+      {
+        heading: "(e) Evaluation [4 Marks]",
+        items: [
+          "Generate predictions on the test set",
+          "Report: Classification Report (precision, recall, F1 per class), Confusion Matrix, and Overall Accuracy"
+        ]
+      },
+      {
+        heading: "(f) Top Feature Analysis [2 Marks]",
+        items: [
+          "Extract the top 5 TF-IDF terms associated with each sentiment class from the model coefficients"
+        ]
+      }
+    ]
+  }
+];
+
+let current = 0;
+
+function buildNav() {
+  const grid = document.getElementById('navGrid');
+  questions.forEach((_, i) => {
+    const btn = document.createElement('div');
+    btn.className = 'nav-btn' + (i === 0 ? ' active' : '');
+    btn.textContent = i + 1;
+    btn.onclick = () => goTo(i);
+    grid.appendChild(btn);
+  });
+}
+
+function renderQuestion(idx) {
+  const q = questions[idx];
+  return `
+    <div class="q-number">Question ${idx + 1} of ${questions.length}</div>
+    <h1>${q.title}</h1>
+    <p class="intro">${q.intro}</p>
+    <p class="dataset-label">Dataset: <code>${q.datasetName}</code></p>
+    <div class="csv-box">${q.csv}</div>
+    <p class="contains-label">The dataset contains:</p>
+    <ul class="contains-list">
+      ${q.contains.map(c => `<li>${c}</li>`).join('')}
+    </ul>
+    <hr class="section-divider">
+    <p class="tasks-title">Tasks</p>
+    <p class="tasks-intro">${q.taskIntro}</p>
+    ${q.tasks.map(t => `
+      <div class="task-section">
+        <h3>${t.heading}</h3>
+        <ul>${t.items.map(i => `<li>${i}</li>`).join('')}</ul>
+      </div>
+      <hr class="section-divider">
+    `).join('')}
+    <p class="instructions-title">Instructions</p>
+    <ul class="instructions-list">
+      <li>Write clean and readable Python code</li>
+      <li>You may either:
+        <ul>
+          <li>Create the DataFrame directly from the given data, or</li>
+          <li>Save the dataset as <code>${q.datasetName}</code> and load it</li>
+        </ul>
+      </li>
+    </ul>
+    <p class="instructions-title">Submission Guidelines</p>
+    <ul class="instructions-list">
+      <li>You may use external IDEs such as Google Colab, Jupyter Notebook, or VS Code</li>
+      <li>Usage of AI tools, AI assistants, or AI-based extensions is strictly prohibited</li>
+      <li>Paste only the complete final code in the answer box</li>
+      <li>Do not include:
+        <ul>
+          <li>Links</li><li>Repository URLs</li><li>Notebook links</li>
+          <li>Drive links</li><li>Screenshots</li><li>File attachments</li>
+        </ul>
+      </li>
+      <li>Only the full code solution should be submitted.</li>
+    </ul>
+    <div class="score-bar">
+      <div class="score-icon"></div>
+      <span class="score-text">Score: 0</span>
+    </div>
+    <div class="nav-footer">
+      ${idx > 0 ? `<button onclick="goTo(${idx - 1})">&#8592; PREVIOUS</button>` : ''}
+      ${idx < questions.length - 1 ? `<button class="primary" onclick="goTo(${idx + 1})">NEXT &#8594;</button>` : ''}
+    </div>
+  `;
+}
+
+function goTo(idx) {
+  current = idx;
+  document.getElementById('mainContent').innerHTML = renderQuestion(idx);
+  document.querySelectorAll('.nav-btn').forEach((b, i) => {
+    b.classList.toggle('active', i === idx);
+  });
+  window.scrollTo(0, 0);
+}
+
+buildNav();
+goTo(0);
+</script>
+</body>
+</html>
